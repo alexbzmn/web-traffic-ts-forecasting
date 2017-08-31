@@ -10,9 +10,9 @@ train = train.fillna(0.)
 # Then a median of these medians is taken as the estimate for the next 60 days.
 # This code's result has the score of around 45 on public leaderboard, but I could get upto 44.8 by playing with it.
 
-# r = 1.61803398875
-# Windows = np.round(r**np.arange(1,9) * 7)
-Windows = [11, 18, 30, 48, 78, 126, 203, 329]
+r = 1.61803398875
+Windows = np.round(r**np.arange(1,10) * 7).astype(int)
+# Windows = [11, 18, 30, 48, 78, 126, 203, 329]
 
 n = train.shape[1] - 1  # 550
 Visits = np.zeros(train.shape[0])
