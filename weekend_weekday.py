@@ -1,4 +1,4 @@
-import gc;
+import gc
 import re
 
 gc.enable()
@@ -7,9 +7,12 @@ from sklearn import naive_bayes
 
 import numpy as np  # linear algebra
 import pandas as pd  # data processing, CSV file I/O (e.g. pd.read_csv)
+from sklearn.preprocessing import Imputer
 
 train = pd.read_csv("data/train_1.csv")
-train = train.fillna(0.)
+
+imputed = Imputer(strategy='median').fit_transform(train.ix[:, 1:])
+train = pd.concat([pd.DataFrame(data=train.Page, index=train.index), pd.DataFrame(data=imputed)], axis=1)
 
 # I'm gong to share a solution that I found interesting with you.
 # The idea is to compute the median of the series in different window sizes at the end of the series,
@@ -44,11 +47,18 @@ test1 = pd.read_csv("data//key_1.csv")
 test1['Page'] = test1.Page.apply(lambda x: x[:-11])
 
 test1 = test1.merge(train[['Page', 'Visits']], on='Page', how='left')
-# test1[['Id','Visits']].to_csv('sub.csv', index=False)
+test1[['Id','Visits']].to_csv('subW.csv', index=False)
+
+import sys
+sys.exit()
 
 ###########################################################################
 
 train = pd.read_csv("data/train_1.csv")
+
+imputed = Imputer(strategy='median').fit_transform(train.ix[:, 1:])
+train = pd.concat([pd.DataFrame(data=train.Page, index=train.index), pd.DataFrame(data=imputed)], axis=1)
+
 # determine idiom with URL
 train['origine'] = train['Page'].apply(lambda x: re.split(".wikipedia.org", x)[0][-2:])
 '''
@@ -188,4 +198,4 @@ test = test.merge(train_page_per_dow, how='left')
 
 test.loc[test.Visits.isnull(), 'Visits'] = 0
 test['Visits'] = ((test['Visits'] * 10).astype('int') / 10 + test1['Visits']) / 2
-test[['Id', 'Visits']].to_csv('subm.csv', index=False)
+test[['Id', 'Visits']].to_csv('subW.csv', index=False)
