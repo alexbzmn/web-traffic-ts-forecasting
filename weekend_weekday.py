@@ -188,4 +188,5 @@ test = test.merge(train_page_per_dow, how='left')
 
 test.loc[test.Visits.isnull(), 'Visits'] = 0
 test['Visits'] = ((test['Visits'] * 10).astype('int') / 10 + test1['Visits']) / 2
+test['Visits'] = np.ceil(test.Visits)
 test[['Id', 'Visits']].to_csv('subm.csv', index=False)
